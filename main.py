@@ -13,16 +13,29 @@ import numpy
 import random
 
 
-class CongruentTriggers(object):
+class TriggersNeutral(object):
     ProblemAppear = 1
-    ParticipantReactGood = 2
-    ParticipantReactBad = 3
+    ParticipantReact = 6
 
 
-class IncongruentTriggers(object):
+class TriggersCongruentStrong(object):
+    ProblemAppear = 2
+    ParticipantReact = 6
+
+
+class TriggersCongruentWeak(object):
+    ProblemAppear = 3
+    ParticipantReact = 6
+
+
+class TriggersIncongruentStrong(object):
     ProblemAppear = 4
-    ParticipantReactGood = 5
-    ParticipantReactBad = 6
+    ParticipantReact = 6
+
+
+class TriggersIncongruentWeak(object):
+    ProblemAppear = 5
+    ParticipantReact = 6
 
 
 # GLOBALS
@@ -127,10 +140,16 @@ def feedb(ans, true_key):
 def prepare_trial_info(trial):
     true_key = KEYS[trial['color']]
     reaction_time = -1
-    if trial['trial_type'] == 'congruent':
-        triggers = CongruentTriggers
+    if trial['trial_type'] == 'congruent_strong':
+        triggers = TriggersCongruentStrong
+    elif trial['trial_type'] == 'congruent_weak':
+        triggers = TriggersCongruentWeak
+    elif trial['trial_type'] == 'incongruent_strong':
+        triggers = TriggersIncongruentStrong
+    elif trial['trial_type'] == 'incongruent_weak':
+        triggers = TriggersIncongruentWeak
     else:
-        triggers = IncongruentTriggers
+        triggers = TriggersNeutral
     return true_key, reaction_time, triggers
 
 
@@ -266,10 +285,7 @@ for idx, block in enumerate(blocks):
             if key:
                 reaction_time = resp_clock.getTime()
                 if data['NIRS']:
-                    if key[0] == true_key:
-                        NIRS.activate_line(triggers.ParticipantReactGood)
-                    else:
-                        NIRS.activate_line(triggers.ParticipantReactBad)
+                    NIRS.activate_line(triggers.ParticipantReact)
                 break
             check_exit()
             win.flip()
