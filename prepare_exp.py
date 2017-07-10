@@ -15,8 +15,6 @@ def add_text(text1, text2):
     len1 = len(text1) - 0.4 * text1.count("I")
     len2 = len(text2) - 0.4 * text2.count("I")
     num = int(abs(len1 - len2) * 1.5)
-    if num != 0:
-        print text1, len1, text2, len2, num
     spaces = " " * num
     if len(text1) > len(text2):
         return text1 + "\n" + spaces + text2
