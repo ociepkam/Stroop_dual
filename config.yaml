@@ -1,0 +1,34 @@
+NIRS: False
+Observer: Michal
+Data: 6.07.2017
+
+Training1_trials_congruent_strong: 0
+Training1_trials_congruent_weak: 0
+Training1_trials_incongruent_strong: 0
+Training1_trials_incongruent_weak: 0
+Training1_trials_neutral: 0
+
+Training2_trials_congruent_strong: 0
+Training2_trials_congruent_weak: 10
+Training2_trials_incongruent_strong: 0
+Training2_trials_incongruent_weak: 10
+Training2_trials_neutral: 0
+
+Training_Resp_time: 4
+Training_Wait_time: 1
+
+Number_of_blocks: 1
+Experiment_trials_congruent_strong: 40
+Experiment_trials_congruent_weak: 40
+Experiment_trials_incongruent_strong: 40
+Experiment_trials_incongruent_weak: 40
+Experiment_trials_neutral: 0
+
+Experiment_Resp_time: 3
+Experiment_Wait_time: 11
+
+Jitter: 2
+
+Fix_time: 1
+Feedb: True
+Feedb_time: 1
