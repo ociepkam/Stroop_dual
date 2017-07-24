@@ -1,8 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*
+
 import random
 from psychopy import visual
 
 stim_text = {'CZERWONY': 'red', 'NIEBIESKI': '#5e75d9', 'BRAZOWY': '#574400', 'ZIELONY': 'green'}  # text: color
-stim_neutral = "SZYBKI"
+stim_neutral = "HHHHHHHH"
+stim_distractor = ['WYSOKA', 'UKRYTA', u'GŁĘBOKA', 'DALEKA']
 
 colors_text = stim_text.keys()
 random.shuffle(colors_text)
@@ -31,7 +35,8 @@ def prepare_trial(trial_type, win, text_height):
     elif trial_type == 'congruent_weak':
         text = random.choice(stim_text.keys())
         color = stim_text[text]
-        text = add_text(text, stim_neutral)
+        stim_distr = random.choice(stim_distractor)
+        text = add_text(text, stim_distr)
 
     elif trial_type == 'incongruent_strong':
         text = random.choice(stim_text.keys())
@@ -49,7 +54,8 @@ def prepare_trial(trial_type, win, text_height):
         else:
             possible_colors = [stim_text[key] for key in left_hand]
         color = random.choice(possible_colors)
-        text = add_text(text, stim_neutral)
+        stim_distr = random.choice(stim_distractor)
+        text = add_text(text, stim_distr)
 
     elif trial_type == 'neutral':
         text = add_text(stim_neutral, stim_neutral)
