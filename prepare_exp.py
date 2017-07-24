@@ -3,6 +3,7 @@
 
 import random
 from psychopy import visual
+import copy
 
 stim_text = {'CZERWONY': 'red', 'NIEBIESKI': '#5e75d9', 'BRAZOWY': '#574400', 'ZIELONY': 'green'}  # text: color
 stim_neutral = "HHHHHHHH"
@@ -13,6 +14,10 @@ random.shuffle(colors_text)
 colors_names = [stim_text[color] for color in colors_text]
 left_hand = colors_text[:2]
 right_hand = colors_text[2:]
+
+last_text = None
+last_text_2 = None
+last_color = None
 
 
 def add_text(text1, text2):
@@ -27,44 +32,84 @@ def add_text(text1, text2):
 
 
 def prepare_trial(trial_type, win, text_height):
+    global last_color, last_text, last_text_2
+    text = None
+    stim_distr = None
     if trial_type == 'congruent_strong':
-        text = random.choice(stim_text.keys())
+        possible_text = stim_text.keys()
+        if last_text is not None:
+            possible_text.remove(last_text)
+            try:
+                possible_text.remove([k for k, v in stim_text.iteritems() if v == last_color][0])
+            except:
+                pass
+        text = random.choice(possible_text)
         color = stim_text[text]
-        text = add_text(text, text)
+        text_all = add_text(text, text)
 
     elif trial_type == 'congruent_weak':
-        text = random.choice(stim_text.keys())
+        possible_text = stim_text.keys()
+        if last_text is not None:
+            possible_text.remove(last_text)
+            try:
+                possible_text.remove([k for k, v in stim_text.iteritems() if v == last_color][0])
+            except:
+                pass
+        text = random.choice(possible_text)
         color = stim_text[text]
-        stim_distr = random.choice(stim_distractor)
-        text = add_text(text, stim_distr)
+        possible_distr = copy.deepcopy(stim_distractor)
+        if last_text_2 is not None:
+            possible_distr.remove(last_text_2)
+        stim_distr = random.choice(possible_distr)
+        text_all = add_text(text, stim_distr)
 
     elif trial_type == 'incongruent_strong':
-        text = random.choice(stim_text.keys())
+        possible_text = stim_text.keys()
+        if last_text is not None:
+            possible_text.remove(last_text)
+        text = random.choice(possible_text)
         if text in left_hand:
             possible_colors = [stim_text[key] for key in right_hand]
         else:
             possible_colors = [stim_text[key] for key in left_hand]
+        if last_color in possible_colors:
+            possible_colors.remove(last_color)
         color = random.choice(possible_colors)
-        text = add_text(text, text)
+        text_all = add_text(text, text)
 
     elif trial_type == 'incongruent_weak':
-        text = random.choice(stim_text.keys())
+        possible_text = stim_text.keys()
+        if last_text is not None:
+            possible_text.remove(last_text)
+        text = random.choice(possible_text)
         if text in left_hand:
             possible_colors = [stim_text[key] for key in right_hand]
         else:
             possible_colors = [stim_text[key] for key in left_hand]
+        if last_color in possible_colors:
+            possible_colors.remove(last_color)
         color = random.choice(possible_colors)
-        stim_distr = random.choice(stim_distractor)
-        text = add_text(text, stim_distr)
+        possible_distr = copy.deepcopy(stim_distractor)
+        if last_text_2 is not None:
+            possible_distr.remove(last_text_2)
+        stim_distr = random.choice(possible_distr)
+        text_all = add_text(text, stim_distr)
 
     elif trial_type == 'neutral':
-        text = add_text(stim_neutral, stim_neutral)
-        color = random.choice(stim_text.values())
+        text_all = add_text(stim_neutral, stim_neutral)
+        possible_colors = stim_text.values()
+        if last_color is not None:
+            possible_colors.remove(last_color)
+        color = random.choice(possible_colors)
 
     else:
         raise Exception('Wrong trigger type')
 
-    stim = visual.TextStim(win, color=color, text=text, height=text_height, alignHoriz='center')
+    last_color = color
+    last_text = text
+    last_text_2 = stim_distr
+
+    stim = visual.TextStim(win, color=color, text=text_all, height=text_height, alignHoriz='center')
 
     return {'trial_type': trial_type, 'text': text, 'color': color, 'stim': stim}
 
