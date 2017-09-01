@@ -1,41 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*
 import atexit
-import codecs
 import csv
-from os.path import join
-import yaml
-from psychopy import visual, event, logging, gui, core
-from misc.screen_misc import get_screen_res
-from prepare_exp import prepare_exp
-import time
 import numpy
 import random
+from os.path import join
 
+from psychopy import visual, event, logging, gui, core
 
-class TriggersNeutral(object):
-    ProblemAppear = 1
-    ParticipantReact = 6
-
-
-class TriggersCongruentStrong(object):
-    ProblemAppear = 2
-    ParticipantReact = 6
-
-
-class TriggersCongruentWeak(object):
-    ProblemAppear = 3
-    ParticipantReact = 6
-
-
-class TriggersIncongruentStrong(object):
-    ProblemAppear = 4
-    ParticipantReact = 6
-
-
-class TriggersIncongruentWeak(object):
-    ProblemAppear = 5
-    ParticipantReact = 6
+from code.ophthalmic_procedure import ophthalmic_procedure
+from code.check_exit import check_exit
+from code.load_data import read_text_from_file, load_config
+from code.triggers import *
+from misc.screen_misc import get_screen_res, get_frame_rate
+from prepare_exp import prepare_exp
 
 
 # GLOBALS
@@ -47,7 +25,8 @@ RESULTS = [['EXP', 'TRIAL_TYPE', 'TEXT', 'COLOR', 'WAIT', 'RESPTIME', 'RT', 'TRU
 POSSIBLE_KEYS = ['z', 'x', 'n', 'm']
 LEFT_KEYS = POSSIBLE_KEYS[:2]
 RIGHT_KEYS = POSSIBLE_KEYS[2:]
-# TRIGGER_LIST = []
+TRIGGER_LIST = []
+TRIGGER_NO = 1
 
 
 @atexit.register
@@ -56,39 +35,9 @@ def save_beh_results():
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(RESULTS)
     logging.flush()
-    # with open(join('results', PART_ID + '_triggermap.txt'), 'w') as trigger_file:
-    #     trigger_writer = csv.writer(trigger_file)
-    #     trigger_writer.writerows(TRIGGER_LIST)
-
-
-def read_text_from_file(file_name, insert=''):
-    """
-    Method that read message from text file, and optionally add some
-    dynamically generated info.
-    :param file_name: Name of file to read
-    :param insert:
-    :return: message
-    """
-    if not isinstance(file_name, str):
-        logging.error('Problem with file reading, filename must be a string')
-        raise TypeError('file_name must be a string')
-    msg = list()
-    with codecs.open(file_name, encoding='utf-8', mode='r') as data_file:
-        for line in data_file:
-            if not line.startswith('#'):  # if not commented line
-                if line.startswith('<--insert-->'):
-                    if insert:
-                        msg.append(insert)
-                else:
-                    msg.append(line)
-    return ''.join(msg)
-
-
-def check_exit(key='f7'):
-    stop = event.getKeys(keyList=[key])
-    if len(stop) > 0:
-        logging.critical('Experiment finished by user! {} pressed.'.format(key))
-        exit(1)
+    with open(join('results', PART_ID + '_triggermap.txt'), 'w') as trigger_file:
+        trigger_writer = csv.writer(trigger_file)
+        trigger_writer.writerows(TRIGGER_LIST)
 
 
 def show_info(win, file_name, insert=''):
@@ -159,7 +108,7 @@ def abort_with_error(err):
 
 
 # exp info
-data = yaml.load(open('config.yaml', 'r'))
+data = load_config()
 
 # prepare nirs
 if data['NIRS']:
@@ -173,6 +122,18 @@ if data['NIRS']:
     else:
         NIRS = devices[0]
 
+# prepare eeg
+if data['EEG']:
+    try:
+        import parallel
+        EEG = parallel.Parallel()
+        EEG.setData(0x00)
+    except:
+        raise Exception("Can't connect to EEG")
+else:
+    EEG = None
+
+
 # part info
 info = {'Part_id': '', 'Part_age': '20', 'Part_sex': ['MALE', "FEMALE"],
         'ExpDate': data['Data'], '_Observer': data['Observer']}
@@ -183,6 +144,7 @@ PART_ID = str(info['Part_id'] + info['Part_sex'] + info['Part_age'])
 
 logging.LogFile('results/' + PART_ID + '.log', level=logging.INFO)
 logging.info(info)
+
 # prepare screen
 SCREEN_RES = get_screen_res()
 win = visual.Window(SCREEN_RES.values(), fullscr=True, monitor='testMonitor', units='pix', screen=0, color='#262626')
@@ -207,6 +169,13 @@ key_labes = visual.TextStim(win=win, text='{0}    {1}    {2}    {3}'.format(*col
 
 resp_clock = core.Clock()
 
+
+if data['ophthalmic_procedure']:
+    frames_per_sec = get_frame_rate(win)
+    TRIGGER_NO, TRIGGER_LIST = ophthalmic_procedure(win=win, port_eeg=EEG, frames_per_sec=frames_per_sec,
+                                                    screen_res=SCREEN_RES, trigger_no=TRIGGER_NO,
+                                                    triggers_list=TRIGGER_LIST)
+
 # ----------------------- Start Stroop ----------------------- #
 
 
@@ -219,7 +188,7 @@ for idx, block in enumerate(training_trials):
         # show fix
         show_info_2(win=win, info=fixation, show_time=data['Fix_time'])
         check_exit()
-
+        print trial
         # show problem
         event.clearEvents()
         win.callOnFlip(resp_clock.reset)
@@ -279,6 +248,7 @@ for idx, block in enumerate(blocks):
         win.flip()
         if data['NIRS']:
             NIRS.activate_line(triggers.ProblemAppear)
+        TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
 
         while resp_clock.getTime() < data['Experiment_Resp_time']:
             key = event.getKeys(keyList=KEYS.values())
@@ -286,6 +256,7 @@ for idx, block in enumerate(blocks):
                 reaction_time = resp_clock.getTime()
                 if data['NIRS']:
                     NIRS.activate_line(triggers.ParticipantReact)
+                TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
                 break
             check_exit()
             win.flip()
@@ -303,6 +274,15 @@ for idx, block in enumerate(blocks):
             ['experiment', trial['trial_type'], trial['text'], trial['color'], data['Experiment_Wait_time']+jitter,
              data['Experiment_Resp_time'], reaction_time, true_key, ans, ans == true_key])
         check_exit()
+
+        # triggers
+        trig_info = "_{}_{}_{}_{}".format(trial['trial_type'], trial['text'], trial['color'], true_key)
+        # stim
+        TRIGGER_LIST.append((str(TRIGGER_NO - 1), "STIM"+trig_info))
+        # re
+        if key:
+            TRIGGER_LIST.append((str(TRIGGER_NO), "RE"+trig_info+"_"+ans))
+
 
         # wait
         time.sleep(data['Experiment_Wait_time'])

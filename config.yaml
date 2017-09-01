@@ -1,17 +1,20 @@
 NIRS: False
+EEG: True
 Observer: Michal
 Data: 6.07.2017
+
+ophthalmic_procedure: True
 
 Training1_trials_congruent_strong: 0
 Training1_trials_congruent_weak: 0
 Training1_trials_incongruent_strong: 0
 Training1_trials_incongruent_weak: 0
-Training1_trials_neutral: 40
+Training1_trials_neutral: 0
 
-Training2_trials_congruent_strong: 10
-Training2_trials_congruent_weak: 10
-Training2_trials_incongruent_strong: 10
-Training2_trials_incongruent_weak: 10
+Training2_trials_congruent_strong: 0
+Training2_trials_congruent_weak: 0
+Training2_trials_incongruent_strong: 0
+Training2_trials_incongruent_weak: 0
 Training2_trials_neutral: 0
 
 Training_Resp_time: 4
@@ -25,9 +28,9 @@ Experiment_trials_incongruent_weak: 40
 Experiment_trials_neutral: 0
 
 Experiment_Resp_time: 3
-Experiment_Wait_time: 11
+Experiment_Wait_time: 2
 
-Jitter: 2
+Jitter: 1
 
 Fix_time: 1
 Feedb: True
