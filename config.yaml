@@ -3,32 +3,32 @@ EEG: True
 Observer: Michal
 Data: 6.07.2017
 
-ophthalmic_procedure: True
+ophthalmic_procedure: False
 
 Training1_trials_congruent_strong: 0
 Training1_trials_congruent_weak: 0
 Training1_trials_incongruent_strong: 0
 Training1_trials_incongruent_weak: 0
-Training1_trials_neutral: 0
+Training1_trials_neutral: 24
 
-Training2_trials_congruent_strong: 0
-Training2_trials_congruent_weak: 0
-Training2_trials_incongruent_strong: 0
-Training2_trials_incongruent_weak: 0
+Training2_trials_congruent_strong: 6
+Training2_trials_congruent_weak: 6
+Training2_trials_incongruent_strong: 6
+Training2_trials_incongruent_weak: 6
 Training2_trials_neutral: 0
 
 Training_Resp_time: 4
 Training_Wait_time: 1
 
 Number_of_blocks: 1
-Experiment_trials_congruent_strong: 40
-Experiment_trials_congruent_weak: 40
-Experiment_trials_incongruent_strong: 40
-Experiment_trials_incongruent_weak: 40
-Experiment_trials_neutral: 0
+Experiment_trials_congruent_strong: 50
+Experiment_trials_congruent_weak: 50
+Experiment_trials_incongruent_strong: 50
+Experiment_trials_incongruent_weak: 50
+Experiment_trials_neutral: 50
 
 Experiment_Resp_time: 3
-Experiment_Wait_time: 2
+Experiment_Wait_time: 1
 
 Jitter: 1
 

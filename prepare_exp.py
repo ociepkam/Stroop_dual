@@ -126,7 +126,7 @@ def prepare_part(trials_congruent_strong, trials_congruent_weak, trials_incongru
 
 
 def prepare_exp(data, win, text_size):
-    text_height = 2 * text_size
+    text_height = 1.5 * text_size
     training1_trials = prepare_part(data['Training1_trials_congruent_strong'],
                                     data['Training1_trials_congruent_weak'],
                                     data['Training1_trials_incongruent_strong'],

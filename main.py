@@ -17,8 +17,8 @@ from prepare_exp import prepare_exp
 
 
 # GLOBALS
-TEXT_SIZE = 40
-TEXT_COLOR = '#f2f2f2'
+TEXT_SIZE = 20
+TEXT_COLOR = '#505050'
 VISUAL_OFFSET = 50
 FIGURES_SCALE = 0.4
 RESULTS = [['EXP', 'TRIAL_TYPE', 'TEXT', 'COLOR', 'WAIT', 'RESPTIME', 'RT', 'TRUE_KEY', 'ANSWER', 'CORR']]
@@ -47,7 +47,7 @@ def show_info(win, file_name, insert=''):
     :return:
     """
     msg = read_text_from_file(file_name, insert=insert)
-    msg = visual.TextStim(win, color=TEXT_COLOR, text=msg, height=TEXT_SIZE - 20, wrapWidth=SCREEN_RES['width'])
+    msg = visual.TextStim(win, color="#808080", text=msg, height=TEXT_SIZE, wrapWidth=SCREEN_RES['width'])
     msg.draw()
     win.flip()
     key = event.waitKeys(keyList=['f7', 'return', 'space'])
@@ -164,7 +164,7 @@ KEYS = {color: key for color, key in zip(colors_names, POSSIBLE_KEYS)}
 
 keys_mapping_text = prepare_key_matching_text(colors_to_key)
 
-key_labes = visual.TextStim(win=win, text='{0}    {1}    {2}    {3}'.format(*colors_to_key), color=TEXT_COLOR,
+key_labes = visual.TextStim(win=win, text='{0}        {1}                    {2}        {3}'.format(*colors_to_key), color=TEXT_COLOR,
                             wrapWidth=SCREEN_RES['width'],  height=TEXT_SIZE, pos=(0, -7 * VISUAL_OFFSET))
 
 resp_clock = core.Clock()
