@@ -1,4 +1,4 @@
-Teraz nastapi wlasciwa czesc testu, z krotka przerwa na odpoczynek w srodku.
+Teraz nastapi wlasciwa czesc testu, z krotka przerwa na odpoczynek.
 
 Pamietaj: rozpoznawaj wylacznie KOLOR slow, a zupelnie ignoruj tresc napisu.
 
@@ -6,15 +6,11 @@ Naciskaj:
 <--insert-->
 
 Pamietaj, NIE MOZESZ czytac napisów i reagowac zgodnie z nimi.
-Czesto kolor napisu i sam napis beda niezgodne i czytanie napisu moze
-prowadzic do blednej reakcji. Rozpoznawaj wylacznie KOLORY!
+Rozpoznawaj wylacznie KOLORY!
 Np. jesli slowo "NIEBIESKI" bedzie wyswietlone w kolorze czerwonym,
 to musisz nacisnac klawisz odpowiadajacy za kolor czerwony (nie niebieski!).
 Po prostu ignoruj tresc napisow.
-W tej czesci testu nie bedzie juz dzwiekow informujacych o pomylce.
 
-Ze wzgledu na rejestracje pracy Twojego mozgu kolorowe slowa beda teraz
-oddzielone 10-cio sekundowa przerwa. Staraj sie reagowac szybko i poprawnie!
-Skup sie, zalezy nam na jak najlepszym wykonaniu zadania.
+W tej czesci testu nie bedzie juz informacji o pomylce.
 
-Poczekaj na komende osoby badajacej.
+Nacisnij SPACJE, aby rozpoczac.
