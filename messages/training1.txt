@@ -1,5 +1,5 @@
-Twoim zadaniem bedzie rozpoznawanie koloru wyswietlanych napisow (HHHHH).
-Napis HHHHH moze byc w kolorze zielonym, niebieskim, czerwonym albo brazowym.
+Twoim zadaniem bedzie rozpoznawanie koloru wyswietlanych napisow.
+Napis moze byc w kolorze zielonym, niebieskim, czerwonym albo brazowym.
 
 Naciskaj:
 <--insert-->

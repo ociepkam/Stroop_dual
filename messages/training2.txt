@@ -1,7 +1,6 @@
 Teraz zaczyna sie wlasciwy test, ktory jest trudniejszy niz poprzedni.
 
-Tym razem zamiast napisów HHHHH
-wyswietlac sie beda napisy oznaczajace kolory (ZIELONY, CZERWONY itp.)
+Tym razem beda sie wyswietlac napisy oznaczajace kolory (ZIELONY, CZERWONY itp.)
 
 Pamietaj: rozpoznawaj wylacznie KOLOR SLOW i zupelnie ignoruj tresc napisu.
 

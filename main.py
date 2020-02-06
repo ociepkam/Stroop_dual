@@ -25,19 +25,20 @@ RESULTS = [['EXP', 'TRIAL_TYPE', 'TEXT', 'COLOR', 'WAIT', 'RESPTIME', 'RT', 'TRU
 POSSIBLE_KEYS = ['z', 'x', 'n', 'm']
 LEFT_KEYS = POSSIBLE_KEYS[:2]
 RIGHT_KEYS = POSSIBLE_KEYS[2:]
-TRIGGER_LIST = []
-TRIGGER_NO = 1
+# TRIGGER_LIST = []
+# TRIGGER_NO = 1
 
 
 @atexit.register
 def save_beh_results():
-    with open(join('results', PART_ID + '_beh.csv'), 'wb') as beh_file:
+    num = random.randint(100, 999)
+    with open(join('results', '{}_beh_{}.csv'.format(PART_ID, num)), 'w') as beh_file:
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(RESULTS)
     logging.flush()
-    with open(join('results', PART_ID + '_triggermap.txt'), 'w') as trigger_file:
-        trigger_writer = csv.writer(trigger_file)
-        trigger_writer.writerows(TRIGGER_LIST)
+    # with open(join('results', '{}_triggermap_{}.txt'.format(PART_ID, num)), 'w') as trigger_file:
+    #     trigger_writer = csv.writer(trigger_file)
+    #     trigger_writer.writerows(TRIGGER_LIST)
 
 
 def show_info(win, file_name, insert=''):
@@ -86,20 +87,21 @@ def feedb(ans, true_key):
         show_info_2(win=win, info=feedb_msg, show_time=data['Feedb_time'])
 
 
-def prepare_trial_info(trial):
-    true_key = KEYS[trial['color']]
-    reaction_time = -1
-    if trial['trial_type'] == 'congruent_strong':
-        triggers = TriggersCongruentStrong
-    elif trial['trial_type'] == 'congruent_weak':
-        triggers = TriggersCongruentWeak
-    elif trial['trial_type'] == 'incongruent_strong':
-        triggers = TriggersIncongruentStrong
-    elif trial['trial_type'] == 'incongruent_weak':
-        triggers = TriggersIncongruentWeak
-    else:
-        triggers = TriggersNeutral
-    return true_key, reaction_time, triggers
+# doesn't work!!!!!!
+# def prepare_trial_info(trial):
+#     true_key = KEYS[trial['color']]
+#     reaction_time = -1
+#     if trial['trial_type'] == 'congruent_strong':
+#         triggers = TriggersCongruentStrong
+#     elif trial['trial_type'] == 'congruent_weak':
+#         triggers = TriggersCongruentWeak
+#     elif trial['trial_type'] == 'incongruent_strong':
+#         triggers = TriggersIncongruentStrong
+#     elif trial['trial_type'] == 'incongruent_weak':
+#         triggers = TriggersIncongruentWeak
+#     else:
+#         triggers = TriggersNeutral
+#     return true_key, reaction_time, triggers
 
 
 def abort_with_error(err):
@@ -110,33 +112,20 @@ def abort_with_error(err):
 # exp info
 data = load_config()
 
-# prepare nirs
-if data['NIRS']:
-    import pyxid
-
-    devices = pyxid.get_xid_devices()
-
-    # check NIRS
-    if not devices:
-        abort_with_error('NIRS not detected!')
-    else:
-        NIRS = devices[0]
-
 # prepare eeg
-if data['EEG']:
-    try:
-        import parallel
-        EEG = parallel.Parallel()
-        EEG.setData(0x00)
-    except:
-        raise Exception("Can't connect to EEG")
-else:
-    EEG = None
+# if data['EEG']:
+#     try:
+#         import parallel
+#         EEG = parallel.Parallel()
+#         EEG.setData(0x00)
+#     except:
+#         raise Exception("Can't connect to EEG")
+# else:
+#     EEG = None
 
 
 # part info
-info = {'Part_id': '', 'Part_age': '20', 'Part_sex': ['MALE', "FEMALE"],
-        'ExpDate': data['Data'], '_Observer': data['Observer']}
+info = {'Part_id': '', 'Part_age': '20', 'Part_sex': ['MALE', "FEMALE"]}
 dictDlg = gui.DlgFromDict(dictionary=info, title='Stroop')  # , fixed=['ExpDate']
 if not dictDlg.OK:
     exit(1)
@@ -157,7 +146,7 @@ neg_feedb = visual.TextStim(win, text=u'Odpowied\u017A niepoprawna', color=TEXT_
 no_feedb = visual.TextStim(win, text=u'Nie udzieli\u0142e\u015B odpowiedzi', color=TEXT_COLOR, height=TEXT_SIZE)
 
 # prepare trials
-training_trials, experiment_trials, colors_to_key, colors_names = prepare_exp(data, win, TEXT_SIZE)
+training_trials, experiment_trials, colors_to_key, colors_names = prepare_exp(data, win, TEXT_SIZE, data["words_dist"])
 blocks = numpy.array_split(experiment_trials, data['Number_of_blocks'])
 
 KEYS = {color: key for color, key in zip(colors_names, POSSIBLE_KEYS)}
@@ -170,11 +159,11 @@ key_labes = visual.TextStim(win=win, text='{0}        {1}                    {2}
 resp_clock = core.Clock()
 
 
-if data['ophthalmic_procedure']:
-    frames_per_sec = get_frame_rate(win)
-    TRIGGER_NO, TRIGGER_LIST = ophthalmic_procedure(win=win, port_eeg=EEG, frames_per_sec=frames_per_sec,
-                                                    screen_res=SCREEN_RES, trigger_no=TRIGGER_NO,
-                                                    triggers_list=TRIGGER_LIST)
+# if data['ophthalmic_procedure']:
+#     frames_per_sec = get_frame_rate(win)
+#     TRIGGER_NO, TRIGGER_LIST = ophthalmic_procedure(win=win, port_eeg=EEG, frames_per_sec=frames_per_sec,
+#                                                     screen_res=SCREEN_RES, trigger_no=TRIGGER_NO,
+#                                                     triggers_list=TRIGGER_LIST)
 
 # ----------------------- Start Stroop ----------------------- #
 
@@ -183,7 +172,9 @@ for idx, block in enumerate(training_trials):
     show_info(win, join('.', 'messages', 'training{}.txt'.format(idx+1)), insert=keys_mapping_text)
     for trial in block:
         # prepare trial
-        true_key, reaction_time, triggers = prepare_trial_info(trial)
+        true_key = KEYS[trial['color']]
+        reaction_time = -1
+        # true_key, reaction_time, triggers = prepare_trial_info(trial)
 
         # show fix
         show_info_2(win=win, info=fixation, show_time=data['Fix_time'])
@@ -192,7 +183,8 @@ for idx, block in enumerate(training_trials):
         # show problem
         event.clearEvents()
         win.callOnFlip(resp_clock.reset)
-        trial['stim'].setAutoDraw(True)
+        for stim in trial['stim']:
+            stim.setAutoDraw(True)
         key_labes.setAutoDraw(True)
         win.flip()
 
@@ -204,7 +196,8 @@ for idx, block in enumerate(training_trials):
             check_exit()
             win.flip()
 
-        trial['stim'].setAutoDraw(False)
+        for stim in trial['stim']:
+            stim.setAutoDraw(False)
         key_labes.setAutoDraw(False)
         win.flip()
 
@@ -233,7 +226,9 @@ show_info(win, join('.', 'messages', 'instruction.txt'), insert=keys_mapping_tex
 for idx, block in enumerate(blocks):
     for trial in block:
         # prepare trial
-        true_key, reaction_time, triggers = prepare_trial_info(trial)
+        # true_key, reaction_time, triggers = prepare_trial_info(trial)
+        true_key = KEYS[trial['color']]
+        reaction_time = -1
         jitter = random.random() * data['Jitter']
 
         # show fix
@@ -243,25 +238,27 @@ for idx, block in enumerate(blocks):
         # show problem
         event.clearEvents()
         win.callOnFlip(resp_clock.reset)
-        trial['stim'].setAutoDraw(True)
+        for stim in trial['stim']:
+            stim.setAutoDraw(True)
         key_labes.setAutoDraw(True)
         win.flip()
-        if data['NIRS']:
-            NIRS.activate_line(triggers.ProblemAppear)
-        TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
+        # if data['NIRS']:
+        #     NIRS.activate_line(triggers.ProblemAppear)
+        # TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
 
         while resp_clock.getTime() < data['Experiment_Resp_time']:
             key = event.getKeys(keyList=KEYS.values())
             if key:
                 reaction_time = resp_clock.getTime()
-                if data['NIRS']:
-                    NIRS.activate_line(triggers.ParticipantReact)
-                TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
+                # if data['NIRS']:
+                #     NIRS.activate_line(triggers.ParticipantReact)
+                # TRIGGER_NO = send_trigger_eeg(TRIGGER_NO, EEG)
                 break
             check_exit()
             win.flip()
 
-        trial['stim'].setAutoDraw(False)
+        for stim in trial['stim']:
+            stim.setAutoDraw(False)
         key_labes.setAutoDraw(False)
         win.flip()
 
@@ -278,10 +275,10 @@ for idx, block in enumerate(blocks):
         # triggers
         trig_info = "_{}_{}_{}_{}".format(trial['trial_type'], trial['text'], trial['color'], true_key)
         # stim
-        TRIGGER_LIST.append((str(TRIGGER_NO - 1), "STIM"+trig_info))
-        # re
-        if key:
-            TRIGGER_LIST.append((str(TRIGGER_NO), "RE"+trig_info+"_"+ans))
+        # TRIGGER_LIST.append((str(TRIGGER_NO - 1), "STIM"+trig_info))
+        # # re
+        # if key:
+        #     TRIGGER_LIST.append((str(TRIGGER_NO), "RE"+trig_info+"_"+ans))
 
 
         # wait
