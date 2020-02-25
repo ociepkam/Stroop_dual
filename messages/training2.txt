@@ -1,4 +1,4 @@
-Teraz zaczyna sie wlasciwy test, ktory jest trudniejszy niz poprzedni.
+﻿Teraz zaczyna sie druga czesc treningu, ktora jest trudniejsza niz poprzedna.
 
 Tym razem beda sie wyswietlac napisy oznaczajace kolory (ZIELONY, CZERWONY itp.)
 

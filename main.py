@@ -135,8 +135,8 @@ logging.LogFile('results/' + PART_ID + '.log', level=logging.INFO)
 logging.info(info)
 
 # prepare screen
-SCREEN_RES = get_screen_res()
-win = visual.Window(SCREEN_RES.values(), fullscr=True, monitor='testMonitor', units='pix', screen=0, color='#262626')
+SCREEN_RES = dict(get_screen_res())
+win = visual.Window(list(SCREEN_RES.values()), fullscr=True, monitor='testMonitor', units='pix', screen=0, color='#262626')
 mouse = event.Mouse(visible=False)
 fixation = visual.TextStim(win, color=TEXT_COLOR, text='+', height=2 * TEXT_SIZE)
 
@@ -179,7 +179,6 @@ for idx, block in enumerate(training_trials):
         # show fix
         show_info_2(win=win, info=fixation, show_time=data['Fix_time'])
         check_exit()
-        print trial
         # show problem
         event.clearEvents()
         win.callOnFlip(resp_clock.reset)

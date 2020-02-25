@@ -10,7 +10,7 @@ stim_text = {'CZERWONY': 'red', 'NIEBIESKI': '#5e75d9', 'BRAZOWY': '#574400', 'Z
 #stim_neutral = "HHHHHHHH"
 stim_distractor = ['WYSOKA', 'UKRYTA', u'GŁĘBOKA', 'DALEKA']
 
-colors_text = stim_text.keys()
+colors_text = list(stim_text.keys())
 random.shuffle(colors_text)
 colors_names = [stim_text[color] for color in colors_text]
 left_hand = colors_text[:2]
@@ -37,7 +37,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
     text = None
     stim_distr = None
     if trial_type == 'congruent_strong':
-        possible_text = stim_text.keys()
+        possible_text = list(stim_text.keys())
         if last_text is not None:
             for elem in last_text:
                 if elem in possible_text:
@@ -51,7 +51,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
         words = [text, text]
 
     elif trial_type == 'congruent_weak':
-        possible_text = stim_text.keys()
+        possible_text = list(stim_text.keys())
         if last_text is not None:
             for elem in last_text:
                 if elem in possible_text:
@@ -69,7 +69,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
         words = [text, stim_distr]
 
     elif trial_type == 'incongruent_strong':
-        possible_text = stim_text.keys()
+        possible_text = list(stim_text.keys())
         if last_text is not None:
             for elem in last_text:
                 if elem in possible_text:
@@ -85,7 +85,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
         words = [text, text]
 
     elif trial_type == 'incongruent_strong_2':
-        possible_text = stim_text.keys()
+        possible_text = list(stim_text.keys())
         if last_text is not None:
             for elem in last_text:
                 if elem in possible_text:
@@ -101,7 +101,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
         words = [text[0], text[1]]
 
     elif trial_type == 'incongruent_weak':
-        possible_text = stim_text.keys()
+        possible_text = list(stim_text.keys())
         if last_text is not None:
             for elem in last_text:
                 if elem in possible_text:
@@ -128,7 +128,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
                     possible_text.remove(elem)
         text = np.random.choice(possible_text)
         words = [text, text]
-        possible_colors = stim_text.values()
+        possible_colors = list(stim_text.values())
         if last_color is not None:
             possible_colors.remove(last_color)
         color = random.choice(possible_colors)
@@ -141,7 +141,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
                     possible_text.remove(elem)
         text = np.random.choice(possible_text, 2)
         words = [text[0], text[1]]
-        possible_colors = stim_text.values()
+        possible_colors = list(stim_text.values())
         if last_color is not None:
             possible_colors.remove(last_color)
         color = random.choice(possible_colors)
