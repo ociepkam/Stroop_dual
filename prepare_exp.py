@@ -139,7 +139,7 @@ def prepare_trial(trial_type, win, text_height, words_dist):
             for elem in last_text:
                 if elem in possible_text:
                     possible_text.remove(elem)
-        text = np.random.choice(possible_text, 2)
+        text = np.random.choice(possible_text, 2, replace=False)
         words = [text[0], text[1]]
         possible_colors = list(stim_text.values())
         if last_color is not None:
